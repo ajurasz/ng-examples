@@ -1,0 +1,26 @@
+<div class="jumbotron">
+  <h4 class="text-center">To Do List App</h4>
+</div>
+
+<div class="input-group">
+  <input type="text" class="form-control" #todoInput>
+  <div class="input-group-prepend">
+    <span class="input-group-text hover-cursor" (click)="onAdd(todoInput)">
+      <i class="fa fa-plus-circle fa-2x"></i>
+    </span>
+  </div>
+</div>
+
+<div class="margin-top-5">
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let todo of todos">
+      <span class="hover-cursor" (click)="onToggle(todo)">
+        <i class="fa fa-lg fa-check-circle-o" [ngClass]="todo.done ? 'fa-check-circle-o' : 'fa-circle-thin'"></i>
+      </span>
+      {{ todo.title }}
+      <span class="hover-cursor text-danger pull-right" (click)="onDelete(todo.id)">
+        <i class="fa fa-trash-o fa-lg"></i>
+      </span>
+    </li>
+  </ul>
+</div>
