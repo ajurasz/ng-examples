@@ -17,9 +17,9 @@ export class ShoppingListService {
     return this.ingredientsSubject.asObservable();
   }
 
-  addIngredient(ingredient: Ingredient) {
-    const ingredients = this.ingredientsSubject.getValue();
-    ingredients.push(ingredient);
-    this.ingredientsSubject.next(ingredients);
+  addIngredient(...ingredients: Ingredient[]) {
+    this.ingredientsSubject.next(
+      this.ingredientsSubject.getValue().concat(ingredients)
+    );
   }
 }
