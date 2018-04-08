@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  recipes_db_url: ''
 };
