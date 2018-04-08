@@ -36,8 +36,13 @@ export class ShoppingListService {
   }
 
   removeIngredient(index: number) {
-    const ingredients = this.ingredientsSubject.getValue();
-    ingredients.splice(index, 1);
+    const ingredients = this.ingredientsSubject.getValue().filter(
+      (ingredient, idx) => {
+        if (index !== idx) {
+          return ingredient;
+        }
+      }
+    );
     this.ingredientsSubject.next(ingredients);
   }
 
