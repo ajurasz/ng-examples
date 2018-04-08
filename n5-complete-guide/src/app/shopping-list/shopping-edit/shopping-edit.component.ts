@@ -41,15 +41,26 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     this.editIngredientSubscription.unsubscribe();
   }
 
-  onItemAdd() {
+  onSubmit() {
     const values = this.ngForm.value;
     const ingredient = new Ingredient(values.name, values.amount);
     if (this.editMode[0]) {
       this.shoppingListService.updateIngredient(+this.editMode[1], ingredient);
-      this.editMode = this.resetEditMode();
     } else {
       this.shoppingListService.addIngredient(ingredient);
+      this.onClear();
     }
+  }
+
+  onDelete() {
+    if (this.editMode[0]) {
+      this.shoppingListService.removeIngredient(this.editMode[1]);
+      this.onClear();
+    }
+  }
+
+  onClear() {
+    this.editMode = this.resetEditMode();
     this.ngForm.reset();
   }
 

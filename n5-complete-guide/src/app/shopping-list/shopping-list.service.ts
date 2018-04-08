@@ -35,6 +35,12 @@ export class ShoppingListService {
     this.ingredientsSubject.next(ingredients);
   }
 
+  removeIngredient(index: number) {
+    const ingredients = this.ingredientsSubject.getValue();
+    ingredients.splice(index, 1);
+    this.ingredientsSubject.next(ingredients);
+  }
+
   startEditIngredient(index: number) {
     this.editIngredientSubject.next(index);
   }
