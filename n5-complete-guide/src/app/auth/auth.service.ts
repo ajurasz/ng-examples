@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import { Observable } from 'rxjs/Observable';
+import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
 import 'rxjs/add/observable/fromPromise';
 import { catchError } from 'rxjs/operators';
 
@@ -10,7 +11,18 @@ export class AuthService {
     ).pipe(
       catchError(err => {
         console.error(err);
-        return Observable.throw(err);
+        return new EmptyObservable();
+      })
+    );
+  }
+
+  signinUser(email: string, password: string): Observable<any> {
+    return Observable.fromPromise(
+      firebase.auth().signInWithEmailAndPassword(email, password)
+    ).pipe(
+      catchError(err => {
+        console.error(err);
+        return new EmptyObservable();
       })
     );
   }
