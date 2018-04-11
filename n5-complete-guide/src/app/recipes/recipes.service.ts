@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { flatMap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RecipesService {
@@ -30,6 +32,7 @@ export class RecipesService {
   ]);
 
   constructor(
+    private authService: AuthService,
     private shoppingListService: ShoppingListService,
     private http: Http
   ) {}
@@ -69,14 +72,27 @@ export class RecipesService {
   }
 
   saveRecipesToRemote(): Observable<Response> {
-    return this.http.put(this.RECIPES_DB_URL, this.recipesSubject.getValue());
+    return this.authService
+      .getToken()
+      .pipe(
+        flatMap(token =>
+          this.http.put(
+            this.RECIPES_DB_URL + '?auth=' + token,
+            this.recipesSubject.getValue()
+          )
+        )
+      );
   }
 
   fetchRecipesFromRemote() {
-    this.http
-      .get(this.RECIPES_DB_URL)
-      .subscribe((response: Response) =>
-        this.recipesSubject.next(response.json())
+    this.authService
+      .getToken()
+      .subscribe(token =>
+        this.http
+          .get(this.RECIPES_DB_URL + '?auth=' + token)
+          .subscribe((response: Response) =>
+            this.recipesSubject.next(response.json())
+          )
       );
   }
 }

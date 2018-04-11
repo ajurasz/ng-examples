@@ -26,4 +26,23 @@ export class AuthService {
       })
     );
   }
+
+  getToken(): Observable<any> {
+    return Observable.fromPromise(
+      firebase.auth().currentUser.getIdToken()
+    ).pipe(
+      catchError(err => {
+        console.error(err);
+        return Observable.throw(err);
+      })
+    );
+  }
+
+  authenticated(): boolean {
+    return firebase.auth().currentUser != null;
+  }
+
+  logout(): Observable<any> {
+    return Observable.fromPromise(firebase.auth().signOut());
+  }
 }
