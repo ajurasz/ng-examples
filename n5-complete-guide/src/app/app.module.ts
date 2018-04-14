@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { ShoppingListModule } from './shopping-list/shopping-list.module';
@@ -12,7 +12,7 @@ import { CoreModule } from './core/core.module';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
     CoreModule,
     ShoppingListModule,
     AuthModule
