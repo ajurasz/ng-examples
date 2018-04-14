@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormGroup, FormControl, FormArray, AbstractControl, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  FormArray,
+  AbstractControl,
+  Validators
+} from '@angular/forms';
 import { RecipesService } from '../recipes.service';
 import { Ingredient } from '../../shared/ingredient.model';
 
@@ -44,10 +50,15 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onAddIngredient() {
-    (<FormArray>this.recipeForm.get('ingredients')).push(new FormGroup({
-      'name': new FormControl(null, Validators.required),
-      'amount': new FormControl(null, [Validators.required, Validators.pattern('^[1-9]+[0-9]*$')])
-    }));
+    (<FormArray>this.recipeForm.get('ingredients')).push(
+      new FormGroup({
+        name: new FormControl(null, Validators.required),
+        amount: new FormControl(null, [
+          Validators.required,
+          Validators.pattern('^[1-9]+[0-9]*$')
+        ])
+      })
+    );
   }
 
   onDeleteIngredient(index: number) {
@@ -69,14 +80,20 @@ export class RecipeEditComponent implements OnInit {
     }
 
     this.recipeForm = new FormGroup({
-      'name': new FormControl(name, Validators.required),
-      'imagePath': new FormControl(imgPath, Validators.required),
-      'description': new FormControl(desc, Validators.required),
-      'ingredients': new FormArray(
-        ingredients.map(ingredient => new FormGroup({
-          'name': new FormControl(ingredient.name, Validators.required),
-          'amount': new FormControl(ingredient.amount, [Validators.required, Validators.pattern('^[1-9]+[0-9]*$')])
-        }))
+      name: new FormControl(name, Validators.required),
+      imagePath: new FormControl(imgPath, Validators.required),
+      description: new FormControl(desc, Validators.required),
+      ingredients: new FormArray(
+        ingredients.map(
+          ingredient =>
+            new FormGroup({
+              name: new FormControl(ingredient.name, Validators.required),
+              amount: new FormControl(ingredient.amount, [
+                Validators.required,
+                Validators.pattern('^[1-9]+[0-9]*$')
+              ])
+            })
+        )
       )
     });
   }

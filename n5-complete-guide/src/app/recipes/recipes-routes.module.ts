@@ -9,10 +9,10 @@ import { AuthGuard } from '../auth/auth-guard.service';
 
 const routes: Routes = [
   {
-    path: 'recipes',
+    path: '',
     component: RecipesComponent,
     children: [
-      { path: '', pathMatch: 'full', component: RecipeEmptyComponent },
+      { path: '', component: RecipeEmptyComponent },
       { path: 'new', component: RecipeEditComponent, canActivate: [AuthGuard] },
       { path: ':id', component: RecipeDetailComponent },
       {
@@ -26,6 +26,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AuthGuard]
 })
 export class RecipesRoutesModule {}
