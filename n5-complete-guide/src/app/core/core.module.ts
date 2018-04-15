@@ -6,7 +6,6 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutesModule } from '../app-routes.module';
 import { RecipesService } from '../recipes/recipes.service';
-import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { AuthService } from '../auth/auth.service';
 import { SharedModule } from './../shared/shared.module';
 import { AuthInterceptor } from '../shared/auth.interceptor';
@@ -17,7 +16,6 @@ import { AuthInterceptor } from '../shared/auth.interceptor';
   exports: [HeaderComponent, AppRoutesModule],
   providers: [
     RecipesService,
-    ShoppingListService,
     AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ]

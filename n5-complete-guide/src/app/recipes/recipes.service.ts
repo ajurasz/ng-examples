@@ -7,7 +7,6 @@ import { flatMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list/shopping-list.service';
 
 @Injectable()
 export class RecipesService {
@@ -30,10 +29,7 @@ export class RecipesService {
     )
   ]);
 
-  constructor(
-    private shoppingListService: ShoppingListService,
-    private httpClient: HttpClient
-  ) {}
+  constructor(private httpClient: HttpClient) {}
 
   getRecipes(): Observable<Recipe[]> {
     return this.recipesSubject.asObservable();
@@ -63,10 +59,6 @@ export class RecipesService {
     const recipes = this.recipesSubject.getValue();
     recipes[index] = recipe;
     this.recipesSubject.next(recipes);
-  }
-
-  addIngredientsToShoppingList(recipe: Recipe) {
-    this.shoppingListService.addIngredient(...recipe.ingredients);
   }
 
   saveRecipesToRemote(): Observable<HttpResponse<any>> {
