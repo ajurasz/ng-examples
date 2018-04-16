@@ -5,18 +5,31 @@ import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { EmptyObservable } from 'rxjs/observable/EmptyObservable';
-import { map, switchMap, catchError, tap } from 'rxjs/operators';
+import { map, switchMap, catchError, tap, filter } from 'rxjs/operators';
 import * as firebase from 'firebase';
 
 import {
   AuthActionTypes,
   SignupAction,
   SignupCompleteAction,
-  ErrorAction
+  ErrorAction,
+  InitAuthCompleteAction
 } from './auth.actions';
 
 @Injectable()
 export class AuthEffects {
+  @Effect()
+  init$ = this.actions$.ofType(AuthActionTypes.INIT).pipe(
+    filter(_ => firebase.auth().currentUser != null),
+    tap(_ => console.log('Init logged in user')),
+    switchMap(_ =>
+      Observable.fromPromise(firebase.auth().currentUser.getIdToken())
+    ),
+    map((token: string) => {
+      return new InitAuthCompleteAction(token);
+    })
+  );
+
   @Effect()
   signup$ = this.actions$.ofType(AuthActionTypes.SIGNUP).pipe(
     switchMap((action: SignupAction) => {

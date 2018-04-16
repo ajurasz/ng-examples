@@ -29,6 +29,7 @@ export class AuthService {
   }
 
   getToken(): Observable<any> {
+    console.log('getToken');
     return Observable.fromPromise(
       firebase.auth().currentUser.getIdToken()
     ).pipe(

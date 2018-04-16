@@ -3,18 +3,11 @@ import { Action } from '@ngrx/store';
 import { Ingredient } from '../../shared/ingredient.model';
 
 export enum ShoppingListActionTypes {
-  GET_INGREDIENTS = '[Shopping List] Get ingredients',
   ADD_INGREDIENTS = '[Shopping List] Add ingredients',
   REMOVE_INGREDIENT = '[Shopping List] Remove ingredient',
   UPDATE_INGREDIENT = '[Shopping List] Update ingredient',
   START_EDIT = '[Shopping List] Start edit',
   STOP_EDIT = '[Shopping List] Stop edit'
-}
-
-export class GetIngredientsAction implements Action {
-  readonly type = ShoppingListActionTypes.GET_INGREDIENTS;
-
-  constructor(public ingredients: Ingredient[]) {}
 }
 
 export class AddIngredientsAction implements Action {
@@ -44,7 +37,6 @@ export class StopEditAction implements Action {
 }
 
 export type ShoppingListActions =
-  | GetIngredientsAction
   | AddIngredientsAction
   | UpdateIngredientAction
   | RemoveIngredientAction

@@ -20,14 +20,11 @@ const initialState: State = {
   editedIngredientIndex: null
 };
 
-export function reduce(state = initialState, action: ShoppingListActions) {
+export function reduce(
+  state = initialState,
+  action: ShoppingListActions
+): State {
   switch (action.type) {
-    case ShoppingListActionTypes.GET_INGREDIENTS: {
-      return {
-        ...state,
-        ingredients: [action.ingredients]
-      };
-    }
     case ShoppingListActionTypes.ADD_INGREDIENTS: {
       return {
         ...state,

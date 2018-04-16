@@ -1,3 +1,6 @@
+import { createSelector } from '@ngrx/store';
+
+import * as fromApp from '../../app.reducers';
 import { AuthActions, AuthActionTypes } from './auth.actions';
 
 export interface State {
@@ -10,8 +13,15 @@ const initialState: State = {
   token: null
 };
 
-export function reduce(state = initialState, action: AuthActions) {
+export function reduce(state = initialState, action: AuthActions): State {
   switch (action.type) {
+    case AuthActionTypes.INIT_COMPLETE: {
+      return {
+        ...state,
+        authenticated: true,
+        token: action.token
+      };
+    }
     case AuthActionTypes.SIGNUP_COMPLETE:
     case AuthActionTypes.SIGNIN_COMPLETE: {
       return {
@@ -24,3 +34,8 @@ export function reduce(state = initialState, action: AuthActions) {
       return state;
   }
 }
+
+export const getToken = createSelector(
+  (state: fromApp.AppState) => state.auth,
+  (state: State) => state.token
+);
