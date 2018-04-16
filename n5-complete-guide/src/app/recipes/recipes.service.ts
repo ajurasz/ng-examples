@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { flatMap } from 'rxjs/operators';
@@ -7,6 +8,7 @@ import { flatMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
+import * as fromRecipe from './store/recipe.reducers';
 
 @Injectable()
 export class RecipesService {
@@ -14,25 +16,16 @@ export class RecipesService {
 
   private recipesSubject: BehaviorSubject<Recipe[]> = new BehaviorSubject<
     Recipe[]
-  >([
-    new Recipe(
-      'Tasty Schnitzel',
-      'A super-tasty Schnitzel - just awesome!',
-      'https://upload.wikimedia.org/wikipedia/commons/7/72/Schnitzel.JPG',
-      [new Ingredient('Meat', 1), new Ingredient('French Fries', 20)]
-    ),
-    new Recipe(
-      'Big Fat Burger',
-      'What else you need to say?',
-      'https://upload.wikimedia.org/wikipedia/commons/b/be/Burger_King_Angus_Bacon_%26_Cheese_Steak_Burger.jpg',
-      [new Ingredient('Buns', 2), new Ingredient('Meat', 1)]
-    )
-  ]);
+  >([]);
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private store: Store<fromRecipe.State>
+  ) {}
 
   getRecipes(): Observable<Recipe[]> {
-    return this.recipesSubject.asObservable();
+    return this.store.select(fromRecipe.getRecipes);
+    // return this.recipesSubject.asObservable();
   }
 
   getRecipe(id: number) {
