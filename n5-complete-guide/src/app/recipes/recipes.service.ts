@@ -23,19 +23,8 @@ export class RecipesService {
     private store: Store<fromRecipe.State>
   ) {}
 
-  getRecipes(): Observable<Recipe[]> {
-    return this.store.select(fromRecipe.getRecipes);
-    // return this.recipesSubject.asObservable();
-  }
-
   getRecipe(id: number) {
     return this.recipesSubject.getValue()[id];
-  }
-
-  addRecipe(recipe: Recipe): number {
-    const recipes = this.recipesSubject.getValue().concat([recipe]);
-    this.recipesSubject.next(recipes);
-    return recipes.length - 1;
   }
 
   deleteRecipe(id: number) {

@@ -1,6 +1,8 @@
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { Recipe } from '../recipe.model';
 import { Ingredient } from '../../shared/ingredient.model';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+
+import { RecipeActions, RecipeActionTypes } from './recipe.actions';
 
 export interface State {
   recipes: Recipe[];
@@ -23,8 +25,15 @@ const initialState: State = {
   ]
 };
 
-export function reduce(state = initialState, action): State {
+export function reduce(state = initialState, action: RecipeActions): State {
   switch (action.type) {
+    case RecipeActionTypes.ADD_RECIPE:
+    case RecipeActionTypes.ADD_RECIPE_AND_REDIRECT: {
+      return {
+        ...state,
+        recipes: [...state.recipes, action.recipe]
+      };
+    }
     default:
       return state;
   }

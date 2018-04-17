@@ -7,8 +7,13 @@ import {
   AbstractControl,
   Validators
 } from '@angular/forms';
+import { Store } from '@ngrx/store';
+
 import { RecipesService } from '../recipes.service';
 import { Ingredient } from '../../shared/ingredient.model';
+
+import * as fromRecipe from '../store/recipe.reducers';
+import { AddRecipeAndRedirectAction } from '../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -23,7 +28,8 @@ export class RecipeEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipeService: RecipesService
+    private recipeService: RecipesService,
+    private store: Store<fromRecipe.State>
   ) {}
 
   ngOnInit() {
@@ -40,8 +46,11 @@ export class RecipeEditComponent implements OnInit {
     if (this.editMode) {
       this.recipeService.updateRecipe(this.id, this.recipeForm.value);
     } else {
-      const newId = this.recipeService.addRecipe(this.recipeForm.value);
-      this.router.navigate(['/', 'recipes', newId]);
+      this.store.dispatch(
+        new AddRecipeAndRedirectAction(this.recipeForm.value)
+      );
+      // const newId = this.recipeService.addRecipe(this.recipeForm.value);
+      // this.router.navigate(['/', 'recipes', newId]);
     }
   }
 
