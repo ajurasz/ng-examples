@@ -49,8 +49,6 @@ export class RecipeEditComponent implements OnInit {
       this.store.dispatch(
         new AddRecipeAndRedirectAction(this.recipeForm.value)
       );
-      // const newId = this.recipeService.addRecipe(this.recipeForm.value);
-      // this.router.navigate(['/', 'recipes', newId]);
     }
   }
 
