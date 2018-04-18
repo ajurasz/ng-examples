@@ -8,6 +8,7 @@ import * as fromApp from '../../app.reducers';
 import * as fromRecipe from '../store/recipe.reducers';
 import { AddIngredientsAction } from '../../shopping-list/store/shopping-list.actions';
 import { take, flatMap, filter } from 'rxjs/operators';
+import { DeleteRecipeAction } from '../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -29,7 +30,6 @@ export class RecipeDetailComponent implements OnInit {
     // const id = +this.route.snapshot.params['id'];
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      // this.recipe = this.recipiesService.getRecipe(this.id);
       this.store
         .select(fromRecipe.getRecipes)
         .pipe(take(1), flatMap(v => v), filter((_, index) => index === this.id))
@@ -42,7 +42,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onDelete() {
-    this.recipiesService.deleteRecipe(this.id);
+    this.store.dispatch(new DeleteRecipeAction(this.id));
     this.router.navigateByUrl('/recipes');
   }
 }

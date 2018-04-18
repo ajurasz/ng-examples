@@ -34,6 +34,12 @@ export function reduce(state = initialState, action: RecipeActions): State {
         recipes: [...state.recipes, action.recipe]
       };
     }
+    case RecipeActionTypes.DELETE_RECIPE: {
+      return {
+        ...state,
+        recipes: state.recipes.filter((_, index) => index !== action.id)
+      };
+    }
     default:
       return state;
   }
