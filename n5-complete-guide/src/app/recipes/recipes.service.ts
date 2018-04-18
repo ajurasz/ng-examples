@@ -27,16 +27,6 @@ export class RecipesService {
     return this.recipesSubject.getValue()[id];
   }
 
-  deleteRecipe(id: number) {
-    const recipes = this.recipesSubject.getValue().filter((recipe, index) => {
-      if (index !== id) {
-        return recipe;
-      }
-    });
-    console.log(recipes);
-    this.recipesSubject.next(recipes);
-  }
-
   updateRecipe(index: number, recipe: Recipe) {
     const recipes = this.recipesSubject.getValue();
     recipes[index] = recipe;
