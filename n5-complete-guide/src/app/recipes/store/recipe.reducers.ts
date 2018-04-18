@@ -40,6 +40,17 @@ export function reduce(state = initialState, action: RecipeActions): State {
         recipes: state.recipes.filter((_, index) => index !== action.id)
       };
     }
+    case RecipeActionTypes.UPDATE_RECIPE: {
+      return {
+        ...state,
+        recipes: state.recipes.map((value, index) => {
+          if (index === action.id) {
+            return action.recipe;
+          }
+          return value;
+        })
+      };
+    }
     default:
       return state;
   }
@@ -51,3 +62,8 @@ export const getRecipes = createSelector(
   recipesFeatureSelector,
   (state: State) => state.recipes
 );
+
+export const getRecipe = (id: number) =>
+  createSelector(recipesFeatureSelector, (state: State) =>
+    state.recipes.find((_, index) => index === id)
+  );

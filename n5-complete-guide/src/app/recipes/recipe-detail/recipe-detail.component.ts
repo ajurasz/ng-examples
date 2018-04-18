@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 
 import { Recipe } from '../recipe.model';
-import { RecipesService } from '../recipes.service';
 import * as fromApp from '../../app.reducers';
 import * as fromRecipe from '../store/recipe.reducers';
 import { AddIngredientsAction } from '../../shopping-list/store/shopping-list.actions';
-import { take, flatMap, filter } from 'rxjs/operators';
 import { DeleteRecipeAction } from '../store/recipe.actions';
 
 @Component({
@@ -20,7 +19,6 @@ export class RecipeDetailComponent implements OnInit {
   recipe: Recipe;
 
   constructor(
-    private recipiesService: RecipesService,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<fromApp.AppState>
@@ -31,8 +29,8 @@ export class RecipeDetailComponent implements OnInit {
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       this.store
-        .select(fromRecipe.getRecipes)
-        .pipe(take(1), flatMap(v => v), filter((_, index) => index === this.id))
+        .select(fromRecipe.getRecipe(this.id))
+        .pipe(take(1))
         .subscribe(recipe => (this.recipe = recipe));
     });
   }

@@ -4,7 +4,8 @@ import { Recipe } from '../recipe.model';
 export enum RecipeActionTypes {
   ADD_RECIPE = '[Recipe] Add recipe',
   ADD_RECIPE_AND_REDIRECT = '[Recipe] Add and redirect',
-  DELETE_RECIPE = '[Recipe] Delete recipe'
+  DELETE_RECIPE = '[Recipe] Delete recipe',
+  UPDATE_RECIPE = '[Recipe] Update recipe'
 }
 
 export class AddRecipeAction implements Action {
@@ -25,7 +26,14 @@ export class DeleteRecipeAction implements Action {
   constructor(public id: number) {}
 }
 
+export class UpdateRecipeAction implements Action {
+  readonly type = RecipeActionTypes.UPDATE_RECIPE;
+
+  constructor(public id: number, public recipe: Recipe) {}
+}
+
 export type RecipeActions =
   | AddRecipeAction
   | AddRecipeAndRedirectAction
-  | DeleteRecipeAction;
+  | DeleteRecipeAction
+  | UpdateRecipeAction;

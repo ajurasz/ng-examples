@@ -23,16 +23,6 @@ export class RecipesService {
     private store: Store<fromRecipe.State>
   ) {}
 
-  getRecipe(id: number) {
-    return this.recipesSubject.getValue()[id];
-  }
-
-  updateRecipe(index: number, recipe: Recipe) {
-    const recipes = this.recipesSubject.getValue();
-    recipes[index] = recipe;
-    this.recipesSubject.next(recipes);
-  }
-
   saveRecipesToRemote(): Observable<HttpResponse<any>> {
     return this.httpClient.put(
       this.RECIPES_DB_URL,

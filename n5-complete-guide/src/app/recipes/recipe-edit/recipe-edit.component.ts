@@ -8,12 +8,15 @@ import {
   Validators
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 
 import { RecipesService } from '../recipes.service';
 import { Ingredient } from '../../shared/ingredient.model';
-
 import * as fromRecipe from '../store/recipe.reducers';
-import { AddRecipeAndRedirectAction } from '../store/recipe.actions';
+import {
+  AddRecipeAndRedirectAction,
+  UpdateRecipeAction
+} from '../store/recipe.actions';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -28,7 +31,6 @@ export class RecipeEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private recipeService: RecipesService,
     private store: Store<fromRecipe.State>
   ) {}
 
@@ -44,7 +46,9 @@ export class RecipeEditComponent implements OnInit {
   onSubmit() {
     console.log(this.recipeForm);
     if (this.editMode) {
-      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+      this.store.dispatch(
+        new UpdateRecipeAction(this.id, this.recipeForm.value)
+      );
     } else {
       this.store.dispatch(
         new AddRecipeAndRedirectAction(this.recipeForm.value)
@@ -79,11 +83,15 @@ export class RecipeEditComponent implements OnInit {
     let ingredients: Ingredient[] = [];
 
     if (this.editMode) {
-      const recipe = this.recipeService.getRecipe(this.id);
-      name = recipe.name;
-      imgPath = recipe.imagePath;
-      desc = recipe.description;
-      ingredients = recipe.ingredients;
+      this.store
+        .select(fromRecipe.getRecipe(this.id))
+        .pipe(take(1))
+        .subscribe(recipe => {
+          name = recipe.name;
+          imgPath = recipe.imagePath;
+          desc = recipe.description;
+          ingredients = recipe.ingredients;
+        });
     }
 
     this.recipeForm = new FormGroup({
