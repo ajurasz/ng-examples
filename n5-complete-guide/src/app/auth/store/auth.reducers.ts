@@ -39,3 +39,8 @@ export const getToken = createSelector(
   (state: fromApp.AppState) => state.auth,
   (state: State) => state.token
 );
+
+export const getAuthenticated = createSelector(
+  (state: fromApp.AppState) => state.auth,
+  (state: State) => state.authenticated
+);

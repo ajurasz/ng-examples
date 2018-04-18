@@ -5,9 +5,11 @@ import {
   Router
 } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { auth } from 'firebase';
+import { Observable } from 'rxjs/Observable';
+import { tap } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
-import { auth } from 'firebase';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,11 +18,14 @@ export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): boolean {
-    const authenticated = this.authService.authenticated();
-    if (!authenticated) {
-      this.router.navigateByUrl('/signin');
-    }
+  ): Observable<boolean> {
+    const authenticated = this.authService.authenticated().pipe(
+      tap(value => {
+        if (value !== true) {
+          this.router.navigateByUrl('/signin');
+        }
+      })
+    );
     return authenticated;
   }
 }
