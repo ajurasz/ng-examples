@@ -57,7 +57,10 @@ export class AuthEffects {
       return Observable.fromPromise(firebase.auth().signOut());
     }),
     tap(_ => console.log('Successful logout!')),
-    map(any => new LogoutCompleteAction())
+    map(any => {
+      this.router.navigateByUrl('/signin');
+      return new LogoutCompleteAction();
+    })
   );
 
   @Effect({ dispatch: false })
