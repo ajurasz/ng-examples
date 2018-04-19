@@ -13,7 +13,8 @@ import {
   SignupAction,
   SignupCompleteAction,
   ErrorAction,
-  InitAuthCompleteAction
+  InitAuthCompleteAction,
+  LogoutCompleteAction
 } from './auth.actions';
 
 @Injectable()
@@ -48,6 +49,15 @@ export class AuthEffects {
       return new SignupCompleteAction(token);
     }),
     catchError(err => of(new ErrorAction(err)))
+  );
+
+  @Effect()
+  logout$ = this.actions$.ofType(AuthActionTypes.LOGOUT).pipe(
+    switchMap(action => {
+      return Observable.fromPromise(firebase.auth().signOut());
+    }),
+    tap(_ => console.log('Successful logout!')),
+    map(any => new LogoutCompleteAction())
   );
 
   @Effect({ dispatch: false })

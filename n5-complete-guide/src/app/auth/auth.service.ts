@@ -8,6 +8,7 @@ import 'rxjs/add/observable/fromPromise';
 import * as fromApp from '../app.reducers';
 import * as fromAuth from './store/auth.reducers';
 import { Injectable } from '@angular/core';
+import { LogoutAction } from './store/auth.actions';
 
 @Injectable()
 export class AuthService {
@@ -52,7 +53,8 @@ export class AuthService {
     return this.store.select(fromAuth.getAuthenticated);
   }
 
-  logout(): Observable<any> {
-    return Observable.fromPromise(firebase.auth().signOut());
+  logout() {
+    this.store.dispatch(new LogoutAction());
+    // return Observable.fromPromise(firebase.auth().signOut());
   }
 }

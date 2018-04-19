@@ -30,6 +30,13 @@ export function reduce(state = initialState, action: AuthActions): State {
         token: action.token
       };
     }
+    case AuthActionTypes.LOGOUT_COMPLETE: {
+      return {
+        ...state,
+        authenticated: false,
+        token: null
+      };
+    }
     default:
       return state;
   }
@@ -42,5 +49,8 @@ export const getToken = createSelector(
 
 export const getAuthenticated = createSelector(
   (state: fromApp.AppState) => state.auth,
-  (state: State) => state.authenticated
+  (state: State) => {
+    console.log(state);
+    return state.authenticated;
+  }
 );

@@ -7,6 +7,8 @@ export enum AuthActionTypes {
   SIGNUP_COMPLETE = '[Auth] Signup complete',
   SIGNIN = '[Auth] Signin',
   SIGNIN_COMPLETE = '[Auth] Signin complete',
+  LOGOUT = '[Auth] Logout',
+  LOGOUT_COMPLETE = '[Auth] Logout complete',
   ERROR = '[Auth] Error'
 }
 
@@ -46,6 +48,14 @@ export class SigninCompleteAction implements Action {
   constructor(public token: string) {}
 }
 
+export class LogoutAction implements Action {
+  readonly type = AuthActionTypes.LOGOUT;
+}
+
+export class LogoutCompleteAction implements Action {
+  readonly type = AuthActionTypes.LOGOUT_COMPLETE;
+}
+
 export class ErrorAction implements Action {
   readonly type = AuthActionTypes.ERROR;
 
@@ -58,4 +68,7 @@ export type AuthActions =
   | SigninAction
   | SigninCompleteAction
   | SignupAction
-  | SignupCompleteAction;
+  | SignupCompleteAction
+  | LogoutAction
+  | LogoutCompleteAction
+  | ErrorAction;

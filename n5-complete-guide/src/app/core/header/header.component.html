@@ -10,7 +10,7 @@
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">
-      <ng-template [ngIf]="!isAuthenticated() | async">
+      <ng-template [ngIf]="!(isAuthenticated() | async)">
         <li class="nav-item">
           <a class="nav-link" routerLink="/signup" routerLinkActive="active">Register</a>
         </li>
