@@ -51,6 +51,12 @@ export function reduce(state = initialState, action: RecipeActions): State {
         })
       };
     }
+    case RecipeActionTypes.FETCH_RECIPES_COMPLETE: {
+      return {
+        ...state,
+        recipes: action.recipes
+      };
+    }
     default:
       return state;
   }

@@ -5,7 +5,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutesModule } from '../app-routes.module';
-import { RecipesService } from '../recipes/recipes.service';
 import { AuthService } from '../auth/auth.service';
 import { SharedModule } from './../shared/shared.module';
 import { AuthInterceptor } from '../shared/auth.interceptor';
@@ -15,7 +14,6 @@ import { AuthInterceptor } from '../shared/auth.interceptor';
   imports: [SharedModule, AppRoutesModule],
   exports: [HeaderComponent, AppRoutesModule],
   providers: [
-    RecipesService,
     AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ]

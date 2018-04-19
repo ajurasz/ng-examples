@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { RecipesService } from '../../recipes/recipes.service';
+import { Store } from '@ngrx/store';
+
 import { AuthService } from '../../auth/auth.service';
+import * as fromRecipe from '../../recipes/store/recipe.reducers';
+import {
+  FetchRecipesAction,
+  SaveRecipeToRemoteAction
+} from '../../recipes/store/recipe.actions';
 
 @Component({
   selector: 'app-header',
@@ -9,19 +15,17 @@ import { AuthService } from '../../auth/auth.service';
 export class HeaderComponent implements OnInit {
   constructor(
     private authService: AuthService,
-    private recipesService: RecipesService
+    private store: Store<fromRecipe.State>
   ) {}
 
   ngOnInit() {}
 
   onSave() {
-    this.recipesService
-      .saveRecipesToRemote()
-      .subscribe(response => console.log(response));
+    this.store.dispatch(new SaveRecipeToRemoteAction());
   }
 
   onFetch() {
-    this.recipesService.fetchRecipesFromRemote();
+    this.store.dispatch(new FetchRecipesAction());
   }
 
   onLogout() {

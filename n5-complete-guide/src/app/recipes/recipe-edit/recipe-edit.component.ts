@@ -10,7 +10,6 @@ import {
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
-import { RecipesService } from '../recipes.service';
 import { Ingredient } from '../../shared/ingredient.model';
 import * as fromRecipe from '../store/recipe.reducers';
 import {
