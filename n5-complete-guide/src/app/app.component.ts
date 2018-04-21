@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as firebase from 'firebase';
 
-import { environment } from '../environments/environment';
 import * as fromApp from './app.reducers';
+import { AppService } from './app.service';
 import { InitAuthAction } from './auth/store/auth.actions';
 
 @Component({
@@ -12,15 +11,15 @@ import { InitAuthAction } from './auth/store/auth.actions';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  constructor(private store: Store<fromApp.AppState>) {}
+  constructor(
+    private appService: AppService,
+    private store: Store<fromApp.AppState>
+  ) {}
 
   ngOnInit() {
-    firebase.initializeApp({
-      apiKey: environment.apiKey,
-      authDomain: environment.authDomain
-    });
-    firebase
-      .auth()
-      .onAuthStateChanged(user => this.store.dispatch(new InitAuthAction()));
+    this.appService.initFirebise();
+    this.appService.onAuthStateChange(user =>
+      this.store.dispatch(new InitAuthAction())
+    );
   }
 }

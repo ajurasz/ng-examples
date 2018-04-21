@@ -16,6 +16,7 @@ import * as fromShoppingList from './shopping-list/store/shopping-list.reducers'
 import * as fromAuth from './auth/store/auth.reducers';
 import { reducers } from './app.reducers';
 import { environment } from '../environments/environment';
+import { AppService } from './app.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,7 @@ import { environment } from '../environments/environment';
       logOnly: environment.production
     })
   ],
+  providers: [AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
