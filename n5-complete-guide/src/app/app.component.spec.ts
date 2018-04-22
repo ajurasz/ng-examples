@@ -48,4 +48,9 @@ describe('AppComponent', () => {
     const action = new InitAuthAction();
     expect(store.dispatch).toHaveBeenCalledWith(action);
   }));
+
+  it('should render router-outlet tag', async(() => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+  }));
 });
