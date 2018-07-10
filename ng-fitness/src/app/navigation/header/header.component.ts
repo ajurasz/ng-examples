@@ -33,4 +33,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onMenuClicked() {
     this.toggle.emit();
   }
+
+  onLogout() {
+    this.authService.logout();
+  }
 }
