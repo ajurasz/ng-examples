@@ -3,6 +3,7 @@ import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { UiService } from '../../shared/ui.service';
 
 @Component({
   selector: 'app-new-training',
@@ -13,7 +14,10 @@ export class NewTrainingComponent implements OnInit {
   exercises: Observable<Exercise[]>;
   selectedExerciseId: string;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(
+    private trainingService: TrainingService,
+    private uiService: UiService
+  ) {}
 
   ngOnInit() {
     this.exercises = this.trainingService.fetchAvailableExercises();

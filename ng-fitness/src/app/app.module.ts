@@ -23,6 +23,8 @@ import { StopTrainingDialogComponent } from './training/current-training/stop-tr
 import { AuthService } from './auth/auth.service';
 import { TrainingService } from './training/training.service';
 import { environment } from '../environments/environment';
+import { UiService } from './shared/ui.service';
+import { ProgressBarComponent } from './shared/progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { environment } from '../environments/environment';
     PastTrainingsComponent,
     HeaderComponent,
     SidenavListComponent,
-    StopTrainingDialogComponent
+    StopTrainingDialogComponent,
+    ProgressBarComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,7 @@ import { environment } from '../environments/environment';
     AngularFirestoreModule,
     AngularFireAuthModule
   ],
-  providers: [AuthService, TrainingService],
+  providers: [AuthService, TrainingService, UiService],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingDialogComponent]
 })

@@ -2,11 +2,13 @@ import { Exercise, ExerciseData } from './exercise.model';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import { _throw } from 'rxjs/observable/throw';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
 import { map, tap, catchError } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { UiService } from '../shared/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -18,7 +20,7 @@ export class TrainingService {
 
   exerciseChange = new Subject<Exercise>();
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private uiService: UiService) {}
 
   private transform = (docs: DocumentChangeAction[]) => {
     return docs.map(doc => {
@@ -31,12 +33,21 @@ export class TrainingService {
   };
 
   fetchAvailableExercises(): Observable<Exercise[]> {
+    this.uiService.loadingChange.next(true);
     return this.db
       .collection(TrainingService.COLLECTION_AVAILABLE_EXERCISES)
       .snapshotChanges()
       .pipe(
         map(this.transform),
-        tap(exercises => this.availableExercises.next(exercises))
+        tap(exercises => this.availableExercises.next(exercises)),
+        tap(exercises => {
+          this.uiService.exercisesLoaded.next(true);
+          this.uiService.loadingChange.next(false);
+        }),
+        catchError(err => {
+          this.uiService.loadingChange.next(false);
+          return _throw(err);
+        })
       );
   }
 

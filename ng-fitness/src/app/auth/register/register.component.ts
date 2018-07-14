@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { UiService } from '../../shared/ui.service';
 
 @Component({
   selector: 'app-register',
@@ -10,7 +11,7 @@ import { AuthService } from '../auth.service';
 export class RegisterComponent implements OnInit {
   maxDate: Date;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private uiService: UiService) {}
 
   ngOnInit() {
     this.maxDate = new Date();
