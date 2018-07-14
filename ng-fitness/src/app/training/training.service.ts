@@ -1,56 +1,97 @@
-import { Exercise } from './exercise.model';
+import { Exercise, ExerciseData } from './exercise.model';
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import { Injectable } from '@angular/core';
+import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
+import { map, tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+@Injectable()
 export class TrainingService {
-  private availableExercises: Exercise[] = [
-    { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
-    { id: 'touch-toes', name: 'Touch Toes', duration: 180, calories: 15 },
-    { id: 'side-lunges', name: 'Side Lunges', duration: 120, calories: 18 },
-    { id: 'burpees', name: 'Burpees', duration: 60, calories: 8 }
-  ];
+  private static readonly COLLECTION_EXERCISES = 'exercises';
+  private static readonly COLLECTION_AVAILABLE_EXERCISES = 'availableExercises';
+
+  private availableExercises = new BehaviorSubject<Exercise[]>([]);
   private runningExercise: Exercise;
-  private exercises: Exercise[] = [];
 
   exerciseChange = new Subject<Exercise>();
 
-  getAvailableExercises() {
-    return [...this.availableExercises];
-  }
+  constructor(private db: AngularFirestore) {}
 
-  startExercise(selectedExerciseId: string) {
-    this.runningExercise = this.availableExercises.find(
-      ex => ex.id === selectedExerciseId
-    );
-    this.exerciseChange.next({ ...this.runningExercise });
-  }
-
-  completeExercise() {
-    this.exercises.push({
-      ...this.runningExercise,
-      date: new Date(),
-      state: 'completed'
+  private transform = (docs: DocumentChangeAction[]) => {
+    return docs.map(doc => {
+      const payload = doc.payload.doc.data() as ExerciseData;
+      return {
+        id: doc.payload.doc.id,
+        ...payload
+      };
     });
-    this.runningExercise = null;
-    this.exerciseChange.next(null);
+  };
+
+  fetchAvailableExercises(): Observable<Exercise[]> {
+    return this.db
+      .collection(TrainingService.COLLECTION_AVAILABLE_EXERCISES)
+      .snapshotChanges()
+      .pipe(
+        map(this.transform),
+        tap(exercises => this.availableExercises.next(exercises))
+      );
   }
 
-  cancelExercise(progress: number) {
-    this.exercises.push({
-      ...this.runningExercise,
-      duration: this.runningExercise.duration * (progress / 100),
-      calories: this.runningExercise.calories * (progress / 100),
-      date: new Date(),
-      state: 'completed'
-    });
-    this.runningExercise = null;
-    this.exerciseChange.next(null);
+  getCompletedOrCanceledExercises(): Observable<Exercise[]> {
+    return this.db
+      .collection(TrainingService.COLLECTION_EXERCISES)
+      .snapshotChanges()
+      .pipe(map(this.transform));
   }
 
   getRunningExercise() {
     return { ...this.runningExercise };
   }
 
-  getCompletedOrCanceledExercises() {
-    return [...this.exercises];
+  startExercise(selectedExerciseId: string) {
+    this.runningExercise = this.availableExercises
+      .getValue()
+      .find(ex => ex.id === selectedExerciseId);
+    this.exerciseChange.next({ ...this.runningExercise });
+  }
+
+  private saveExercise(exercise: Exercise) {
+    const exerciseDate = { ...exercise } as ExerciseData;
+    return fromPromise(
+      this.db.collection(TrainingService.COLLECTION_EXERCISES).add(exerciseDate)
+    ).pipe(
+      map(_ => true),
+      catchError(err => {
+        console.error(err);
+        return of(false);
+      })
+    );
+  }
+
+  completeExercise() {
+    this.saveExercise({
+      ...this.runningExercise,
+      date: new Date(),
+      state: 'completed'
+    }).subscribe(_ => {
+      this.runningExercise = null;
+      this.exerciseChange.next(null);
+    });
+  }
+
+  cancelExercise(progress: number) {
+    this.saveExercise({
+      ...this.runningExercise,
+      duration: this.runningExercise.duration * (progress / 100),
+      calories: this.runningExercise.calories * (progress / 100),
+      date: new Date(),
+      state: 'completed'
+    }).subscribe(_ => {
+      this.runningExercise = null;
+      this.exerciseChange.next(null);
+    });
   }
 }
