@@ -9,6 +9,8 @@ import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
 import { map, tap, catchError } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { UiService } from '../shared/ui.service';
+import { Store } from '@ngrx/store';
+import { StartLoadingAction, StopLoadingAction } from '../shared/ui.actions';
 
 @Injectable()
 export class TrainingService {
@@ -20,7 +22,11 @@ export class TrainingService {
 
   exerciseChange = new Subject<Exercise>();
 
-  constructor(private db: AngularFirestore, private uiService: UiService) {}
+  constructor(
+    private db: AngularFirestore,
+    private uiService: UiService,
+    private store$: Store<any>
+  ) {}
 
   private transform = (docs: DocumentChangeAction[]) => {
     return docs.map(doc => {
@@ -33,7 +39,7 @@ export class TrainingService {
   };
 
   fetchAvailableExercises(): Observable<Exercise[]> {
-    this.uiService.loadingChange.next(true);
+    this.store$.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_AVAILABLE_EXERCISES)
       .snapshotChanges()
@@ -42,11 +48,11 @@ export class TrainingService {
         tap(exercises => this.availableExercises.next(exercises)),
         tap(_ => {
           this.uiService.exercisesLoaded.next(true);
-          this.uiService.loadingChange.next(false);
+          this.store$.dispatch(new StopLoadingAction());
         }),
         catchError(err => {
           console.error(err);
-          this.uiService.loadingChange.next(false);
+          this.store$.dispatch(new StopLoadingAction());
           this.uiService.showMessage(err.message, null, { duration: 3000 });
           return _throw(err);
         })
@@ -54,7 +60,7 @@ export class TrainingService {
   }
 
   getCompletedOrCanceledExercises(): Observable<Exercise[]> {
-    this.uiService.loadingChange.next(true);
+    this.store$.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_EXERCISES)
       .snapshotChanges()
@@ -62,10 +68,11 @@ export class TrainingService {
         map(this.transform),
         tap(_ => {
           this.uiService.exercisesLoaded.next(true);
+          this.store$.dispatch(new StopLoadingAction());
         }),
         catchError(err => {
           console.error(err);
-          this.uiService.loadingChange.next(false);
+          this.store$.dispatch(new StopLoadingAction());
           this.uiService.showMessage(err.message, null, { duration: 3000 });
           return _throw(err);
         })
@@ -84,7 +91,7 @@ export class TrainingService {
   }
 
   private saveExercise(exercise: Exercise) {
-    this.uiService.loadingChange.next(true);
+    this.store$.dispatch(new StartLoadingAction());
     const exerciseDate = { ...exercise } as ExerciseData;
     return fromPromise(
       this.db.collection(TrainingService.COLLECTION_EXERCISES).add(exerciseDate)
@@ -95,7 +102,7 @@ export class TrainingService {
       }),
       catchError(err => {
         console.error(err);
-        this.uiService.loadingChange.next(false);
+        this.store$.dispatch(new StopLoadingAction());
         this.uiService.showMessage(err.message, null, { duration: 3000 });
         return of(false);
       })

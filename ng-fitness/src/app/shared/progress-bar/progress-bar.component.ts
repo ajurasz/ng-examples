@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
-import { UiService } from '../ui.service';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
+import * as fromUi from '../ui.reducers';
 
 @Component({
   selector: 'app-progress-bar',
   template: `
-    <mat-progress-bar *ngIf="uiService.loadingChange | async" mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar *ngIf="isLoading$ | async" mode="indeterminate"></mat-progress-bar>
   `,
   styles: [
     `
@@ -14,6 +17,12 @@ import { UiService } from '../ui.service';
     `
   ]
 })
-export class ProgressBarComponent {
-  constructor(public uiService: UiService) {}
+export class ProgressBarComponent implements OnInit {
+  isLoading$: Observable<boolean>;
+
+  constructor(private store$: Store<any>) {}
+
+  ngOnInit() {
+    this.isLoading$ = this.store$.select(fromUi.getIsLoading);
+  }
 }

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { UiService } from '../../shared/ui.service';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+
+import * as fromUi from '../../shared/ui.reducers';
 
 @Component({
   selector: 'app-login',
@@ -9,11 +12,14 @@ import { UiService } from '../../shared/ui.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  isLoading$: Observable<boolean>;
   loginForm: FormGroup;
 
-  constructor(private authService: AuthService, public uiService: UiService) {}
+  constructor(private authService: AuthService, private store$: Store<any>) {}
 
   ngOnInit() {
+    this.isLoading$ = this.store$.select(fromUi.getIsLoading);
+
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.email, Validators.required]),
       password: new FormControl(null, [Validators.required])

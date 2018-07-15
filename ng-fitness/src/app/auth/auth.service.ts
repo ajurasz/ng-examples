@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { UiService } from '../shared/ui.service';
+import { Store } from '@ngrx/store';
+import { StartLoadingAction, StopLoadingAction } from '../shared/ui.actions';
 
 @Injectable()
 export class AuthService {
@@ -12,35 +14,36 @@ export class AuthService {
   constructor(
     private router: Router,
     private af: AngularFireAuth,
-    private uiService: UiService
+    private uiService: UiService,
+    private store$: Store<any>
   ) {}
 
   register(authData: AuthData) {
-    this.uiService.loadingChange.next(true);
+    this.store$.dispatch(new StartLoadingAction());
     this.af.auth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(_ => {
         this.authSuccessful();
-        this.uiService.loadingChange.next(false);
+        this.store$.dispatch(new StopLoadingAction());
       })
       .catch(err => {
         console.error(err);
-        this.uiService.loadingChange.next(false);
+        this.store$.dispatch(new StopLoadingAction());
         this.uiService.showMessage(err.message, null, { duration: 3000 });
       });
   }
 
   login(authData: AuthData) {
-    this.uiService.loadingChange.next(true);
+    this.store$.dispatch(new StartLoadingAction());
     this.af.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(_ => {
         this.authSuccessful();
-        this.uiService.loadingChange.next(false);
+        this.store$.dispatch(new StopLoadingAction());
       })
       .catch(err => {
         console.error(err);
-        this.uiService.loadingChange.next(false);
+        this.store$.dispatch(new StopLoadingAction());
         this.uiService.showMessage(err.message, null, { duration: 3000 });
       });
   }

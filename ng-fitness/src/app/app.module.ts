@@ -15,6 +15,8 @@ import { UiService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { SharedModule } from './shared/shared.module';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './app.reducers';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { SharedModule } from './shared/shared.module';
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
     AuthModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forRoot(reducers)
   ],
   providers: [AuthService, UiService],
   bootstrap: [AppComponent]
