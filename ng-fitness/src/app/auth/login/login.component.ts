@@ -11,7 +11,7 @@ import { UiService } from '../../shared/ui.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private authService: AuthService, private uiService: UiService) {}
+  constructor(private authService: AuthService, public uiService: UiService) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({

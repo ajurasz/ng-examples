@@ -11,7 +11,7 @@ import { UiService } from '../../shared/ui.service';
 export class RegisterComponent implements OnInit {
   maxDate: Date;
 
-  constructor(private authService: AuthService, private uiService: UiService) {}
+  constructor(private authService: AuthService, public uiService: UiService) {}
 
   ngOnInit() {
     this.maxDate = new Date();

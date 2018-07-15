@@ -15,5 +15,5 @@ import { UiService } from '../ui.service';
   ]
 })
 export class ProgressBarComponent {
-  constructor(private uiService: UiService) {}
+  constructor(public uiService: UiService) {}
 }
