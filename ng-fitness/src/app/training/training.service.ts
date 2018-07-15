@@ -84,13 +84,18 @@ export class TrainingService {
   }
 
   private saveExercise(exercise: Exercise) {
+    this.uiService.loadingChange.next(true);
     const exerciseDate = { ...exercise } as ExerciseData;
     return fromPromise(
       this.db.collection(TrainingService.COLLECTION_EXERCISES).add(exerciseDate)
     ).pipe(
       map(_ => true),
+      tap(_ => {
+        this.uiService.exercisesLoaded.next(true);
+      }),
       catchError(err => {
         console.error(err);
+        this.uiService.loadingChange.next(false);
         this.uiService.showMessage(err.message, null, { duration: 3000 });
         return of(false);
       })
