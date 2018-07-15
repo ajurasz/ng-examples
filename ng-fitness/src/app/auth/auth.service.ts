@@ -26,6 +26,7 @@ export class AuthService {
       .catch(err => {
         console.error(err);
         this.uiService.loadingChange.next(false);
+        this.uiService.showMessage(err.message, null, { duration: 3000 });
       });
   }
 
@@ -40,6 +41,7 @@ export class AuthService {
       .catch(err => {
         console.error(err);
         this.uiService.loadingChange.next(false);
+        this.uiService.showMessage(err.message, null, { duration: 3000 });
       });
   }
 

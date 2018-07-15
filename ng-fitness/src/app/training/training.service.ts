@@ -40,22 +40,36 @@ export class TrainingService {
       .pipe(
         map(this.transform),
         tap(exercises => this.availableExercises.next(exercises)),
-        tap(exercises => {
+        tap(_ => {
           this.uiService.exercisesLoaded.next(true);
           this.uiService.loadingChange.next(false);
         }),
         catchError(err => {
+          console.error(err);
           this.uiService.loadingChange.next(false);
+          this.uiService.showMessage(err.message, null, { duration: 3000 });
           return _throw(err);
         })
       );
   }
 
   getCompletedOrCanceledExercises(): Observable<Exercise[]> {
+    this.uiService.loadingChange.next(true);
     return this.db
       .collection(TrainingService.COLLECTION_EXERCISES)
       .snapshotChanges()
-      .pipe(map(this.transform));
+      .pipe(
+        map(this.transform),
+        tap(_ => {
+          this.uiService.exercisesLoaded.next(true);
+        }),
+        catchError(err => {
+          console.error(err);
+          this.uiService.loadingChange.next(false);
+          this.uiService.showMessage(err.message, null, { duration: 3000 });
+          return _throw(err);
+        })
+      );
   }
 
   getRunningExercise() {
@@ -77,6 +91,7 @@ export class TrainingService {
       map(_ => true),
       catchError(err => {
         console.error(err);
+        this.uiService.showMessage(err.message, null, { duration: 3000 });
         return of(false);
       })
     );
