@@ -25,7 +25,7 @@ export class TrainingService {
   constructor(
     private db: AngularFirestore,
     private uiService: UiService,
-    private store$: Store<any>
+    private store: Store<any>
   ) {}
 
   private transform = (docs: DocumentChangeAction[]) => {
@@ -39,7 +39,7 @@ export class TrainingService {
   };
 
   fetchAvailableExercises(): Observable<Exercise[]> {
-    this.store$.dispatch(new StartLoadingAction());
+    this.store.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_AVAILABLE_EXERCISES)
       .snapshotChanges()
@@ -48,11 +48,11 @@ export class TrainingService {
         tap(exercises => this.availableExercises.next(exercises)),
         tap(_ => {
           this.uiService.exercisesLoaded.next(true);
-          this.store$.dispatch(new StopLoadingAction());
+          this.store.dispatch(new StopLoadingAction());
         }),
         catchError(err => {
           console.error(err);
-          this.store$.dispatch(new StopLoadingAction());
+          this.store.dispatch(new StopLoadingAction());
           this.uiService.showMessage(err.message, null, { duration: 3000 });
           return _throw(err);
         })
@@ -60,7 +60,7 @@ export class TrainingService {
   }
 
   getCompletedOrCanceledExercises(): Observable<Exercise[]> {
-    this.store$.dispatch(new StartLoadingAction());
+    this.store.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_EXERCISES)
       .snapshotChanges()
@@ -68,11 +68,11 @@ export class TrainingService {
         map(this.transform),
         tap(_ => {
           this.uiService.exercisesLoaded.next(true);
-          this.store$.dispatch(new StopLoadingAction());
+          this.store.dispatch(new StopLoadingAction());
         }),
         catchError(err => {
           console.error(err);
-          this.store$.dispatch(new StopLoadingAction());
+          this.store.dispatch(new StopLoadingAction());
           this.uiService.showMessage(err.message, null, { duration: 3000 });
           return _throw(err);
         })
@@ -91,7 +91,7 @@ export class TrainingService {
   }
 
   private saveExercise(exercise: Exercise) {
-    this.store$.dispatch(new StartLoadingAction());
+    this.store.dispatch(new StartLoadingAction());
     const exerciseDate = { ...exercise } as ExerciseData;
     return fromPromise(
       this.db.collection(TrainingService.COLLECTION_EXERCISES).add(exerciseDate)
@@ -102,7 +102,7 @@ export class TrainingService {
       }),
       catchError(err => {
         console.error(err);
-        this.store$.dispatch(new StopLoadingAction());
+        this.store.dispatch(new StopLoadingAction());
         this.uiService.showMessage(err.message, null, { duration: 3000 });
         return of(false);
       })

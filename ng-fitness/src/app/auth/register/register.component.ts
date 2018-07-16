@@ -16,10 +16,10 @@ export class RegisterComponent implements OnInit {
   isLoading$: Observable<boolean>;
   maxDate: Date;
 
-  constructor(private authService: AuthService, private store$: Store<any>) {}
+  constructor(private authService: AuthService, private store: Store<any>) {}
 
   ngOnInit() {
-    this.isLoading$ = this.store$.select(fromUi.getIsLoading);
+    this.isLoading$ = this.store.select(fromUi.getIsLoading);
 
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);

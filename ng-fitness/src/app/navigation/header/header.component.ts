@@ -1,33 +1,23 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AuthService } from '../../auth/auth.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Store } from '@ngrx/store';
+
+import * as fromAuth from '../../auth/auth.reducers';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-  isAuth: boolean;
-  authChangeSubscription: Subscription;
+export class HeaderComponent implements OnInit {
+  isAuth$: Observable<boolean>;
   @Output() toggle = new EventEmitter<void>();
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private store: Store<any>) {}
 
   ngOnInit() {
-    this.authChangeSubscription = this.authService.authChange.subscribe(
-      isAuth => (this.isAuth = isAuth)
-    );
-  }
-
-  ngOnDestroy() {
-    this.authChangeSubscription.unsubscribe();
+    this.isAuth$ = this.store.select(fromAuth.isAuthenticated);
   }
 
   onMenuClicked() {

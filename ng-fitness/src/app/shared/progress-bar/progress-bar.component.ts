@@ -20,9 +20,9 @@ import * as fromUi from '../ui.reducers';
 export class ProgressBarComponent implements OnInit {
   isLoading$: Observable<boolean>;
 
-  constructor(private store$: Store<any>) {}
+  constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.isLoading$ = this.store$.select(fromUi.getIsLoading);
+    this.isLoading$ = this.store.select(fromUi.getIsLoading);
   }
 }

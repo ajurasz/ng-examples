@@ -15,10 +15,10 @@ export class LoginComponent implements OnInit {
   isLoading$: Observable<boolean>;
   loginForm: FormGroup;
 
-  constructor(private authService: AuthService, private store$: Store<any>) {}
+  constructor(private authService: AuthService, private store: Store<any>) {}
 
   ngOnInit() {
-    this.isLoading$ = this.store$.select(fromUi.getIsLoading);
+    this.isLoading$ = this.store.select(fromUi.getIsLoading);
 
     this.loginForm = new FormGroup({
       email: new FormControl(null, [Validators.email, Validators.required]),

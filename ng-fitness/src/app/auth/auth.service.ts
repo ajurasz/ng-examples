@@ -6,6 +6,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { UiService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
 import { StartLoadingAction, StopLoadingAction } from '../shared/ui.actions';
+import { LoginAction, LogoutAction } from './auth.actions';
 
 @Injectable()
 export class AuthService {
@@ -15,50 +16,46 @@ export class AuthService {
     private router: Router,
     private af: AngularFireAuth,
     private uiService: UiService,
-    private store$: Store<any>
+    private store: Store<any>
   ) {}
 
   register(authData: AuthData) {
-    this.store$.dispatch(new StartLoadingAction());
+    this.store.dispatch(new StartLoadingAction());
     this.af.auth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(_ => {
         this.authSuccessful();
-        this.store$.dispatch(new StopLoadingAction());
       })
-      .catch(err => {
-        console.error(err);
-        this.store$.dispatch(new StopLoadingAction());
-        this.uiService.showMessage(err.message, null, { duration: 3000 });
-      });
+      .catch(err => this.handleErrors(err));
   }
 
   login(authData: AuthData) {
-    this.store$.dispatch(new StartLoadingAction());
+    this.store.dispatch(new StartLoadingAction());
     this.af.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(_ => {
         this.authSuccessful();
-        this.store$.dispatch(new StopLoadingAction());
       })
-      .catch(err => {
-        console.error(err);
-        this.store$.dispatch(new StopLoadingAction());
-        this.uiService.showMessage(err.message, null, { duration: 3000 });
-      });
-  }
-
-  authSuccessful() {
-    this.authChange.next(true);
-    this.router.navigate(['/training']);
+      .catch(err => this.handleErrors(err));
   }
 
   logout() {
-    this.authChange.next(false);
+    this.store.dispatch(new LogoutAction());
+    // TODO: move to LogoutAction effect
     this.router.navigate(['/login']);
   }
 
-  isAuth() {
-    return this.af.auth.currentUser != null;
+  private authSuccessful() {
+    this.store.dispatch(new LoginAction());
+    // TODO: move to LoginAction effect
+    this.router.navigate(['/training']);
+    this.store.dispatch(new StopLoadingAction());
+  }
+
+  private handleErrors(err) {
+    console.error(err);
+    this.store.dispatch(new StopLoadingAction());
+    // TODO: create ui action with just an effect (no reducer)
+    this.uiService.showMessage(err.message, null, { duration: 3000 });
   }
 }
