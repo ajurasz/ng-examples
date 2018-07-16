@@ -17,6 +17,8 @@ import { AuthService } from './auth/auth.service';
 import { SharedModule } from './shared/shared.module';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './app.reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { UiEffects } from './shared/ui.effects';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { reducers } from './app.reducers';
     AngularFireModule.initializeApp(environment.firebase),
     AuthModule,
     SharedModule,
-    StoreModule.forRoot(reducers)
+    StoreModule.forRoot(reducers),
+    EffectsModule.forRoot([UiEffects])
   ],
   providers: [AuthService, UiService],
   bootstrap: [AppComponent]

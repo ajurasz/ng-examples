@@ -1,7 +1,6 @@
 import { Exercise, ExerciseData } from './exercise.model';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
 import { _throw } from 'rxjs/observable/throw';
 import { fromPromise } from 'rxjs/observable/fromPromise';
 import { Injectable } from '@angular/core';
@@ -10,7 +9,12 @@ import { map, tap, catchError } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { UiService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
-import { StartLoadingAction, StopLoadingAction } from '../shared/ui.actions';
+import {
+  StartLoadingAction,
+  StopLoadingAction,
+  DisplayMessageAction
+} from '../shared/ui.actions';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Injectable()
 export class TrainingService {
@@ -50,12 +54,7 @@ export class TrainingService {
           this.uiService.exercisesLoaded.next(true);
           this.store.dispatch(new StopLoadingAction());
         }),
-        catchError(err => {
-          console.error(err);
-          this.store.dispatch(new StopLoadingAction());
-          this.uiService.showMessage(err.message, null, { duration: 3000 });
-          return _throw(err);
-        })
+        catchError(err => this.handleErrors(err))
       );
   }
 
@@ -70,13 +69,17 @@ export class TrainingService {
           this.uiService.exercisesLoaded.next(true);
           this.store.dispatch(new StopLoadingAction());
         }),
-        catchError(err => {
-          console.error(err);
-          this.store.dispatch(new StopLoadingAction());
-          this.uiService.showMessage(err.message, null, { duration: 3000 });
-          return _throw(err);
-        })
+        catchError(err => this.handleErrors(err))
       );
+  }
+
+  private handleErrors(err): ErrorObservable {
+    console.error(err);
+    this.store.dispatch(new StopLoadingAction());
+    this.store.dispatch(
+      new DisplayMessageAction(err.message, null, { duration: 3000 })
+    );
+    return _throw(err);
   }
 
   getRunningExercise() {
@@ -100,12 +103,7 @@ export class TrainingService {
       tap(_ => {
         this.uiService.exercisesLoaded.next(true);
       }),
-      catchError(err => {
-        console.error(err);
-        this.store.dispatch(new StopLoadingAction());
-        this.uiService.showMessage(err.message, null, { duration: 3000 });
-        return of(false);
-      })
+      catchError(err => this.handleErrors(err))
     );
   }
 
