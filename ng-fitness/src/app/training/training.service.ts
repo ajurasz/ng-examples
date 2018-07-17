@@ -7,7 +7,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentChangeAction } from 'angularfire2/firestore';
 import { map, tap, catchError } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { UiService } from '../shared/ui.service';
 import { Store } from '@ngrx/store';
 import {
   StartLoadingAction,
@@ -26,11 +25,7 @@ export class TrainingService {
 
   exerciseChange = new Subject<Exercise>();
 
-  constructor(
-    private db: AngularFirestore,
-    private uiService: UiService,
-    private store: Store<any>
-  ) {}
+  constructor(private db: AngularFirestore, private store: Store<any>) {}
 
   private transform = (docs: DocumentChangeAction[]) => {
     return docs.map(doc => {
@@ -51,7 +46,6 @@ export class TrainingService {
         map(this.transform),
         tap(exercises => this.availableExercises.next(exercises)),
         tap(_ => {
-          this.uiService.exercisesLoaded.next(true);
           this.store.dispatch(new StopLoadingAction());
         }),
         catchError(err => this.handleErrors(err))
@@ -66,7 +60,6 @@ export class TrainingService {
       .pipe(
         map(this.transform),
         tap(_ => {
-          this.uiService.exercisesLoaded.next(true);
           this.store.dispatch(new StopLoadingAction());
         }),
         catchError(err => this.handleErrors(err))
@@ -101,7 +94,7 @@ export class TrainingService {
     ).pipe(
       map(_ => true),
       tap(_ => {
-        this.uiService.exercisesLoaded.next(true);
+        this.store.dispatch(new StopLoadingAction());
       }),
       catchError(err => this.handleErrors(err))
     );

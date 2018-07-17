@@ -15,17 +15,10 @@ export class StopLoadingAction implements Action {
   readonly type = UiActionTypes.STOP_LOADING;
 }
 
-export class ExercisesLoadedAction implements Action {
-  readonly type = UiActionTypes.EXERCISES_LOADED;
-}
-
 export class DisplayMessageAction implements Action {
   readonly type = UiActionTypes.DISPLAY_MESSAGE;
 
   constructor(public message: string, public action: any, public config: any) {}
 }
 
-export type UiActions =
-  | StartLoadingAction
-  | StopLoadingAction
-  | ExercisesLoadedAction;
+export type UiActions = StartLoadingAction | StopLoadingAction;

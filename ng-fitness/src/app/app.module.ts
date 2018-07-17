@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { environment } from '../environments/environment';
-import { UiService } from './shared/ui.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { SharedModule } from './shared/shared.module';
@@ -39,7 +38,7 @@ import { UiEffects } from './shared/ui.effects';
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([UiEffects])
   ],
-  providers: [AuthService, UiService],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

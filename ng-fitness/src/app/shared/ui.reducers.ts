@@ -4,12 +4,10 @@ import { UiActions, UiActionTypes } from './ui.actions';
 
 export interface State {
   isLoading: boolean;
-  exercisesLoaded: boolean;
 }
 
 const initialState: State = {
-  isLoading: false,
-  exercisesLoaded: false
+  isLoading: false
 };
 
 export function reducer(state = initialState, action: UiActions): State {
@@ -23,11 +21,6 @@ export function reducer(state = initialState, action: UiActions): State {
       return {
         ...state,
         isLoading: false
-      };
-    case UiActionTypes.EXERCISES_LOADED:
-      return {
-        ...state,
-        exercisesLoaded: true
       };
     default:
       return state;

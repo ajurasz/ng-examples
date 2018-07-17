@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { UiService } from '../../shared/ui.service';
 
 import * as fromUi from '../../shared/ui.reducers';
 import { Observable } from 'rxjs/Observable';

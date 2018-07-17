@@ -1,5 +1,4 @@
 import { AuthData } from './auth-data.model';
-import { Subject } from 'rxjs/Subject';
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -13,8 +12,6 @@ import { LoginAction, LogoutAction } from './auth.actions';
 
 @Injectable()
 export class AuthService {
-  authChange = new Subject<boolean>();
-
   constructor(
     private router: Router,
     private af: AngularFireAuth,
