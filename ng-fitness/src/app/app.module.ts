@@ -2,6 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 import { AngularFireModule } from 'angularfire2';
 
 import { AppComponent } from './app.component';
@@ -14,9 +17,7 @@ import { environment } from '../environments/environment';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { SharedModule } from './shared/shared.module';
-import { StoreModule } from '@ngrx/store';
 import { reducers } from './app.reducers';
-import { EffectsModule } from '@ngrx/effects';
 import { UiEffects } from './shared/ui.effects';
 
 @NgModule({
@@ -36,7 +37,11 @@ import { UiEffects } from './shared/ui.effects';
     AuthModule,
     SharedModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([UiEffects])
+    EffectsModule.forRoot([UiEffects]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production
+    })
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]
