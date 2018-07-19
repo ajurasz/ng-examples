@@ -38,18 +38,10 @@ export class TrainingService {
   };
 
   fetchAvailableExercises(): Observable<Exercise[]> {
-    this.store.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_AVAILABLE_EXERCISES)
       .snapshotChanges()
-      .pipe(
-        map(this.transform),
-        tap(exercises => this.availableExercises.next(exercises)),
-        tap(_ => {
-          this.store.dispatch(new StopLoadingAction());
-        }),
-        catchError(err => this.handleErrors(err))
-      );
+      .pipe(map(this.transform));
   }
 
   getCompletedOrCanceledExercises(): Observable<Exercise[]> {

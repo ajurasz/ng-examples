@@ -1,5 +1,6 @@
 import { Exercise } from './exercise.model';
 import { TrainingActions, TrainingActionTypes } from './training.actions';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface State {
   availableExercises: Exercise[];
@@ -61,3 +62,10 @@ export function reducer(state = initialState, action: TrainingActions): State {
       return state;
   }
 }
+
+const getState = createFeatureSelector<State>('training');
+
+export const getAvailableExercises = createSelector(
+  getState,
+  state => state.availableExercises
+);
