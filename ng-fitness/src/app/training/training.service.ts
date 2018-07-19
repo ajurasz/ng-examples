@@ -44,18 +44,12 @@ export class TrainingService {
       .pipe(map(this.transform));
   }
 
-  getCompletedOrCanceledExercises(): Observable<Exercise[]> {
+  fetchCompletedOrCanceledExercises(): Observable<Exercise[]> {
     this.store.dispatch(new StartLoadingAction());
     return this.db
       .collection(TrainingService.COLLECTION_EXERCISES)
       .snapshotChanges()
-      .pipe(
-        map(this.transform),
-        tap(_ => {
-          this.store.dispatch(new StopLoadingAction());
-        }),
-        catchError(err => this.handleErrors(err))
-      );
+      .pipe(map(this.transform));
   }
 
   private handleErrors(err): ErrorObservable {

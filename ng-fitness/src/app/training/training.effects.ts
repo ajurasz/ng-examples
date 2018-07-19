@@ -35,7 +35,7 @@ export class TrainingEffects {
   loadCompletedOrCancledExercises$: Observable<Action> = this.actions$.pipe(
     ofType(TrainingActionTypes.LOAD_COMPLETED_OR_CANCLED_EXERCISES),
     tap(_ => this.store.dispatch(new StartLoadingAction())),
-    mergeMap(_ => this.trainingService.getCompletedOrCanceledExercises()),
+    mergeMap(_ => this.trainingService.fetchCompletedOrCanceledExercises()),
     mergeMap((exercises: Exercise[]) => [
       new StopLoadingAction(),
       new LoadCompletedOrCancledExercisesCompleteAction(exercises)
