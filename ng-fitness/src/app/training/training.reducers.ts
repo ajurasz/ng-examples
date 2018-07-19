@@ -69,3 +69,8 @@ export const getAvailableExercises = createSelector(
   getState,
   state => state.availableExercises
 );
+
+export const getCompletedOrCancledExercises = createSelector(
+  getState,
+  state => state.completedOrCancledExercises
+);
