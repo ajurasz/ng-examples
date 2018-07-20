@@ -1,31 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TrainingService } from './training.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { getRunningExercise } from './training.reducers';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-training',
   templateUrl: './training.component.html',
   styleUrls: ['./training.component.css']
 })
-export class TrainingComponent implements OnInit, OnDestroy {
-  ongoingTraining;
-  exerciseChangeSubscription: Subscription;
+export class TrainingComponent implements OnInit {
+  ongoingTraining: Observable<boolean>;
 
-  constructor(private trainingService: TrainingService) {}
+  constructor(private store: Store<any>) {}
 
   ngOnInit() {
-    this.exerciseChangeSubscription = this.trainingService.exerciseChange.subscribe(
-      exercise => {
-        if (exercise) {
-          this.ongoingTraining = true;
-        } else {
-          this.ongoingTraining = false;
-        }
-      }
-    );
-  }
-
-  ngOnDestroy() {
-    this.exerciseChangeSubscription.unsubscribe();
+    this.ongoingTraining = this.store
+      .select(getRunningExercise)
+      .pipe(map(exercise => (exercise ? true : false)));
   }
 }

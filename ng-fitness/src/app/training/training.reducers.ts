@@ -43,8 +43,8 @@ export function reducer(state = initialState, action: TrainingActions): State {
         ...state,
         runningExercise: {
           ...state.runningExercise,
-          duration: this.runningExercise.duration * (action.progress / 100),
-          calories: this.runningExercise.calories * (action.progress / 100),
+          duration: state.runningExercise.duration * (action.progress / 100),
+          calories: state.runningExercise.calories * (action.progress / 100),
           date: new Date(),
           state: 'canceled'
         }
@@ -73,4 +73,9 @@ export const getAvailableExercises = createSelector(
 export const getCompletedOrCancledExercises = createSelector(
   getState,
   state => state.completedOrCancledExercises
+);
+
+export const getRunningExercise = createSelector(
+  getState,
+  state => state.runningExercise
 );

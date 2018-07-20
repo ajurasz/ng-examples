@@ -5,9 +5,10 @@ import { Observable } from 'rxjs/Observable';
 import {
   TrainingActionTypes,
   LoadAvailableExercisesCompleteAction,
-  LoadCompletedOrCancledExercisesCompleteAction
+  LoadCompletedOrCancledExercisesCompleteAction,
+  StopExerciseAction
 } from './training.actions';
-import { map, mergeMap, catchError, tap } from 'rxjs/operators';
+import { mergeMap, catchError, tap, withLatestFrom } from 'rxjs/operators';
 import { Exercise } from './exercise.model';
 import { Action, Store } from '@ngrx/store';
 import {
@@ -16,6 +17,7 @@ import {
   DisplayMessageAction
 } from '../shared/ui.actions';
 import { empty } from 'rxjs/observable/empty';
+import { getRunningExercise } from './training.reducers';
 
 @Injectable()
 export class TrainingEffects {
@@ -40,6 +42,24 @@ export class TrainingEffects {
       new StopLoadingAction(),
       new LoadCompletedOrCancledExercisesCompleteAction(exercises)
     ]),
+    catchError(err => this.handleErrors(err))
+  );
+
+  @Effect()
+  saveExercises$: Observable<Action> = this.actions$.pipe(
+    ofType(
+      TrainingActionTypes.CANCEL_EXERCISE,
+      TrainingActionTypes.COMPLETE_EXERCISE
+    ),
+    withLatestFrom(this.store.select(getRunningExercise)),
+    tap(_ => this.store.dispatch(new StartLoadingAction())),
+    mergeMap(([action, state]) => {
+      return this.trainingService
+        .saveExercise(state)
+        .pipe(
+          mergeMap(_ => [new StopExerciseAction(), new StopLoadingAction()])
+        );
+    }),
     catchError(err => this.handleErrors(err))
   );
 

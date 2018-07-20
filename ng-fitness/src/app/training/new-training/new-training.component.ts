@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 import { getAvailableExercises } from '../training.reducers';
-import { LoadAvailableExercisesAction } from '../training.actions';
+import {
+  LoadAvailableExercisesAction,
+  StartExerciseAction
+} from '../training.actions';
 
 @Component({
   selector: 'app-new-training',
@@ -16,10 +18,7 @@ export class NewTrainingComponent implements OnInit {
   exercises: Observable<Exercise[]>;
   selectedExerciseId: string;
 
-  constructor(
-    private trainingService: TrainingService,
-    private store: Store<any>
-  ) {}
+  constructor(private store: Store<any>) {}
 
   ngOnInit() {
     this.store.dispatch(new LoadAvailableExercisesAction());
@@ -27,6 +26,6 @@ export class NewTrainingComponent implements OnInit {
   }
 
   onStart(form: NgForm) {
-    this.trainingService.startExercise(form.value.exercise);
+    this.store.dispatch(new StartExerciseAction(form.value.exercise));
   }
 }
