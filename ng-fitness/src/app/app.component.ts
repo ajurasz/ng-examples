@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 })
 export class AppComponent implements OnInit, OnDestroy {
   authSubscription: Subscription;
-  constructor(private authService: AuthService, private store: Store<any>) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.checkForUser().subscribe(user => {
