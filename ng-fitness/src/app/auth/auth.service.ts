@@ -18,6 +18,10 @@ export class AuthService {
     private store: Store<any>
   ) {}
 
+  checkForUser() {
+    return this.af.authState;
+  }
+
   register(authData: AuthData) {
     this.store.dispatch(new StartLoadingAction());
     this.af.auth
@@ -39,12 +43,15 @@ export class AuthService {
   }
 
   logout() {
-    this.store.dispatch(new LogoutAction());
+    this.af.auth
+      .signOut()
+      .then(_ => this.store.dispatch(new LogoutAction()))
+      .catch(err => this.handleErrors(err));
     // TODO: move to LogoutAction effect
     this.router.navigate(['/login']);
   }
 
-  private authSuccessful() {
+  authSuccessful() {
     this.store.dispatch(new LoginAction());
     // TODO: move to LoginAction effect
     this.router.navigate(['/training']);
