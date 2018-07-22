@@ -9,6 +9,7 @@ import {
   DisplayMessageAction
 } from '../shared/ui.actions';
 import { LoginAction, LogoutAction } from './auth.actions';
+import { CleanupSubscriptionsAction } from '../training/training.actions';
 
 @Injectable()
 export class AuthService {
@@ -43,6 +44,7 @@ export class AuthService {
   }
 
   logout() {
+    this.store.dispatch(new CleanupSubscriptionsAction());
     this.af.auth
       .signOut()
       .then(_ => this.store.dispatch(new LogoutAction()))

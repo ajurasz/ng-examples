@@ -2,33 +2,25 @@ import { Action } from '@ngrx/store';
 import { Exercise } from './exercise.model';
 
 export enum TrainingActionTypes {
-  LOAD_AVAILABLE_EXERCISES = '[Training] Load available',
-  LOAD_AVAILABLE_EXERCISES_COMPLETE = '[Training] Load available complete',
-  LOAD_COMPLETED_OR_CANCLED_EXERCISES = '[Training] Load completed or cancled exercises',
-  LOAD_COMPLETED_OR_CANCLED_EXERCISES_COMPLETE = '[Training] Load completed or cancled exercises complete',
+  FETCH_DATA = '[Training] Fetch data',
+  CLEANUP_SUBSCRIPTIONS = '[Training] cleanup subscriptions',
+  LOAD_AVAILABLE_EXERCISES = '[Training] Load aiailable exercises',
   START_EXERCISE = '[Training] Start exercise',
   COMPLETE_EXERCISE = '[Training] Complete exercise',
   CANCEL_EXERCISE = '[Training] Cancel exercise',
   STOP_EXERCISE = '[Training] Stop exercise'
 }
 
+export class FetchDataAction implements Action {
+  readonly type = TrainingActionTypes.FETCH_DATA;
+}
+
+export class CleanupSubscriptionsAction implements Action {
+  readonly type = TrainingActionTypes.CLEANUP_SUBSCRIPTIONS;
+}
+
 export class LoadAvailableExercisesAction implements Action {
   readonly type = TrainingActionTypes.LOAD_AVAILABLE_EXERCISES;
-}
-
-export class LoadAvailableExercisesCompleteAction implements Action {
-  readonly type = TrainingActionTypes.LOAD_AVAILABLE_EXERCISES_COMPLETE;
-
-  constructor(public exercises: Exercise[]) {}
-}
-
-export class LoadCompletedOrCancledExercisesAction implements Action {
-  readonly type = TrainingActionTypes.LOAD_COMPLETED_OR_CANCLED_EXERCISES;
-}
-
-export class LoadCompletedOrCancledExercisesCompleteAction implements Action {
-  readonly type =
-    TrainingActionTypes.LOAD_COMPLETED_OR_CANCLED_EXERCISES_COMPLETE;
 
   constructor(public exercises: Exercise[]) {}
 }
@@ -55,9 +47,6 @@ export class StopExerciseAction implements Action {
 
 export type TrainingActions =
   | LoadAvailableExercisesAction
-  | LoadAvailableExercisesCompleteAction
-  | LoadCompletedOrCancledExercisesAction
-  | LoadCompletedOrCancledExercisesCompleteAction
   | StartExerciseAction
   | StopExerciseAction
   | CancelExerciseAction

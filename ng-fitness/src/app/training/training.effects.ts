@@ -2,14 +2,8 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { TrainingService } from './training.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import {
-  TrainingActionTypes,
-  LoadAvailableExercisesCompleteAction,
-  LoadCompletedOrCancledExercisesCompleteAction,
-  StopExerciseAction
-} from './training.actions';
+import { TrainingActionTypes, StopExerciseAction } from './training.actions';
 import { mergeMap, catchError, tap, withLatestFrom } from 'rxjs/operators';
-import { Exercise } from './exercise.model';
 import { Action, Store } from '@ngrx/store';
 import {
   StartLoadingAction,
@@ -21,28 +15,21 @@ import { getRunningExercise } from './training.reducers';
 
 @Injectable()
 export class TrainingEffects {
-  @Effect()
-  loadAvailableExercises$: Observable<Action> = this.actions$.pipe(
-    ofType(TrainingActionTypes.LOAD_AVAILABLE_EXERCISES),
-    tap(_ => this.store.dispatch(new StartLoadingAction())),
-    mergeMap(_ => this.trainingService.fetchAvailableExercises()),
-    mergeMap((exercises: Exercise[]) => [
-      new StopLoadingAction(),
-      new LoadAvailableExercisesCompleteAction(exercises)
-    ]),
-    catchError(err => this.handleErrors(err))
+  @Effect({ dispatch: false })
+  fetchData$ = this.actions$.pipe(
+    ofType(TrainingActionTypes.FETCH_DATA),
+    tap(_ => {
+      this.trainingService.fetchCompletedOrCanceledExercises();
+      this.trainingService.fetchAvailableExercises();
+    })
   );
 
-  @Effect()
-  loadCompletedOrCancledExercises$: Observable<Action> = this.actions$.pipe(
-    ofType(TrainingActionTypes.LOAD_COMPLETED_OR_CANCLED_EXERCISES),
-    tap(_ => this.store.dispatch(new StartLoadingAction())),
-    mergeMap(_ => this.trainingService.fetchCompletedOrCanceledExercises()),
-    mergeMap((exercises: Exercise[]) => [
-      new StopLoadingAction(),
-      new LoadCompletedOrCancledExercisesCompleteAction(exercises)
-    ]),
-    catchError(err => this.handleErrors(err))
+  @Effect({ dispatch: false })
+  cleanupSubscriptions$ = this.actions$.pipe(
+    ofType(TrainingActionTypes.CLEANUP_SUBSCRIPTIONS),
+    tap(_ => {
+      this.trainingService.cleanupSubscriptions();
+    })
   );
 
   @Effect()

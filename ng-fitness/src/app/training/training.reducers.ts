@@ -4,27 +4,20 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 export interface State {
   availableExercises: Exercise[];
-  completedOrCancledExercises: Exercise[];
   runningExercise: Exercise;
 }
 
 const initialState: State = {
   availableExercises: [],
-  completedOrCancledExercises: [],
   runningExercise: null
 };
 
 export function reducer(state = initialState, action: TrainingActions): State {
   switch (action.type) {
-    case TrainingActionTypes.LOAD_AVAILABLE_EXERCISES_COMPLETE:
+    case TrainingActionTypes.LOAD_AVAILABLE_EXERCISES:
       return {
         ...state,
         availableExercises: action.exercises
-      };
-    case TrainingActionTypes.LOAD_COMPLETED_OR_CANCLED_EXERCISES_COMPLETE:
-      return {
-        ...state,
-        completedOrCancledExercises: action.exercises
       };
     case TrainingActionTypes.START_EXERCISE:
       return {
@@ -64,16 +57,6 @@ export function reducer(state = initialState, action: TrainingActions): State {
 }
 
 const getState = createFeatureSelector<State>('training');
-
-export const getAvailableExercises = createSelector(
-  getState,
-  state => state.availableExercises
-);
-
-export const getCompletedOrCancledExercises = createSelector(
-  getState,
-  state => state.completedOrCancledExercises
-);
 
 export const getRunningExercise = createSelector(
   getState,
