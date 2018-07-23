@@ -19,6 +19,7 @@ import { AuthService } from './auth/auth.service';
 import { SharedModule } from './shared/shared.module';
 import { reducers } from './app.reducers';
 import { UiEffects } from './shared/ui.effects';
+import { AuthEffects } from './auth/auth.effects';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { UiEffects } from './shared/ui.effects';
     AuthModule,
     SharedModule,
     StoreModule.forRoot(reducers),
-    EffectsModule.forRoot([UiEffects]),
+    EffectsModule.forRoot([AuthEffects, UiEffects]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production

@@ -15,7 +15,7 @@ export class TrainingService {
   private static readonly COLLECTION_EXERCISES = 'exercises';
   private static readonly COLLECTION_AVAILABLE_EXERCISES = 'availableExercises';
 
-  private subscriptions: Subscription[];
+  private subscriptions: Subscription[] = [];
   availableExercises = new BehaviorSubject<Exercise[]>([]);
   completedOrCanceledExercises = new BehaviorSubject<Exercise[]>([]);
 

@@ -1,5 +1,4 @@
 import { AuthData } from './auth-data.model';
-import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Store } from '@ngrx/store';
@@ -13,11 +12,7 @@ import { CleanupSubscriptionsAction } from '../training/training.actions';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private router: Router,
-    private af: AngularFireAuth,
-    private store: Store<any>
-  ) {}
+  constructor(private af: AngularFireAuth, private store: Store<any>) {}
 
   checkForUser() {
     return this.af.authState;
@@ -49,14 +44,10 @@ export class AuthService {
       .signOut()
       .then(_ => this.store.dispatch(new LogoutAction()))
       .catch(err => this.handleErrors(err));
-    // TODO: move to LogoutAction effect
-    this.router.navigate(['/login']);
   }
 
   authSuccessful() {
     this.store.dispatch(new LoginAction());
-    // TODO: move to LoginAction effect
-    this.router.navigate(['/training']);
     this.store.dispatch(new StopLoadingAction());
   }
 
